@@ -1,0 +1,95 @@
+service: asset-uploader
+
+custom:
+  stage: ${opt:stage, 'dev'}
+  region: ${opt:region, 'us-west-2'}
+  assetBucket: ${opt:asset-bucket}
+  assetTable: assets-${self:custom.stage}
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  region: ${self:custom.region}
+  versionFunctions: false
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource:
+        - !GetAtt AssetsTable.Arn
+    - Effect: Allow
+      Action:
+        - s3:PutObject
+        - s3:GetObject
+        - s3:DeleteObject
+      Resource:
+        - !Sub arn:aws:s3:::${self:custom.assetBucket}/*
+          
+  environment:
+    ASSET_BUCKET: ${self:custom.assetBucket}
+    ASSET_TABLE: ${self:custom.assetTable}
+  timeout: 30
+
+
+functions:
+  create:
+    handler: index.createAsset
+    events:
+      - http:
+          path: /asset
+          method: post
+          cors: true
+
+  complete:
+    handler: index.completeAsset
+    events:
+      - http:
+          path: /asset/{assetId}
+          method: put
+          cors: true
+  get:
+    handler: index.getAsset
+    events:
+      - http:
+          path: /asset/{assetId}
+          method: get
+          cors: true
+
+  # Added for completeness, but in the real world this would have to be secured otherwise people could just randomly delete assets
+  delete:
+    handler: index.deleteAsset
+    events:
+      - http:
+          path: /asset/{assetId}
+          method: delete
+          cors: true
+
+resources:
+  Resources:
+    ApiGatewayRestApi:
+      Type: AWS::ApiGateway::RestApi
+      Properties:
+        Name: ${self:service}-${self:custom.stage}
+
+    AssetsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.assetTable}
+        AttributeDefinitions:
+          -
+            AttributeName: id
+            AttributeType: S
+        KeySchema:
+          -
+            AttributeName: id
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+
+    # If the S3 bucket was not already pre-created, would uncomment this and let CloudFormation create the bucket and manage it as part of this service's stack
+    #AssetBucket:
+    #  Type: AWS::S3::Bucket
+    #  Properties:
+    #    BucketName: ${self:custom.assetBucket}
