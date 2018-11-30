@@ -18,7 +18,7 @@ npm install
 
 ### Run
 ```
-env BASE_URL=$ASSET_UPLOADER_API_URL mocha
+env BASE_URL=<asset uploader API URL> mocha
 ```
 
 If not specified `BASE_URL` will default to `http://localhost:8080`. To test the serverless implementation set `BASE_URL` to the API Gateway URL. 
