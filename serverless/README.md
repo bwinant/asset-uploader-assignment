@@ -1,7 +1,8 @@
 Serverless Asset Uploader
 =========================
 
-Serverless asset uploader implementation using API Gateway, AWS Lambda and DynamoDB 
+Serverless asset uploader implementation using API Gateway, AWS Lambda and DynamoDB for tracking asset state. 
+
 ### Requirements
 
 - An AWS profile with proper permissions to create resources.
