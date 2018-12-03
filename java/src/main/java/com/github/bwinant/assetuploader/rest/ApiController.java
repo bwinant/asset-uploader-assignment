@@ -28,12 +28,12 @@ public class ApiController
 
     @Autowired
     public ApiController(AssetService assetService,
-                         @Value("${download.expires.sec:60}") int downloadTimeout,
-                         @Value("${upload.expires.sec:900}") int uploadTimeout)
+                         @Value("${download.expires.secs:60}") int downloadTimeout,
+                         @Value("${upload.expires.secs:900}") int uploadTimeout)
     {
         this.assetService = assetService;
-        this.downloadTimeout = downloadTimeout * 1000;
-        this.uploadTimeout = uploadTimeout * 1000;
+        this.downloadTimeout = downloadTimeout;
+        this.uploadTimeout = uploadTimeout;
     }
 
     @RequestMapping(value = "", method = POST)

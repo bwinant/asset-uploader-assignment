@@ -82,7 +82,8 @@ public class AssetServiceImpl implements AssetService
         }
 
         // Check if asset was already completed
-        if (asset.getStatus() == uploaded) {
+        if (asset.getStatus() == uploaded)
+        {
             throw new AssetException("Upload of asset " + assetId + " is already completed");
         }
 
@@ -120,7 +121,7 @@ public class AssetServiceImpl implements AssetService
 
     private String getPresignedUrl(UUID assetId, HttpMethod method, long expires)
     {
-        Date expiration = new Date(System.currentTimeMillis() + expires);
+        Date expiration = new Date(System.currentTimeMillis() + (expires * 1000));
 
         GeneratePresignedUrlRequest request =
             new GeneratePresignedUrlRequest(bucketName, assetId.toString())

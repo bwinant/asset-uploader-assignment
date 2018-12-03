@@ -22,7 +22,7 @@ public interface AssetService
      * Returns a pre-signed PUT URL to download an asset from S3
      *
      * @param assetId the asset id
-     * @param expires amount of time in milliseconds before the URL expires
+     * @param expires amount of time in seconds before the URL expires
      *
      * @return a pre-signed upload URL
      */
@@ -32,7 +32,7 @@ public interface AssetService
      * Returns a pre-signed GET URL to download an asset from S3
      *
      * @param assetId the asset id
-     * @param expires amount of time in milliseconds before the URL expires
+     * @param expires amount of time in seconds before the URL expires
      *
      * @return a pre-signed download URL
      */
