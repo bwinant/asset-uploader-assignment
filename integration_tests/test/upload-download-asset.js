@@ -117,7 +117,8 @@ describe('Asset Uploader Service Upload/Download Tests', function() {
         res = await getAsset(assetId)
                 .expect(404)
                 .then(res => res.body);
-        expect(res).to.equal(`Asset ${assetId} not found`);
+        expect(res).to.be.an('object');
+        expect(res).to.have.property('error', `Asset ${assetId} not found`);
 
         res = await downloadFile(downloadUrl)
                 .expect(403)
@@ -139,7 +140,8 @@ describe('Asset Uploader Service Upload/Download Tests', function() {
             const res = await completeAsset('qwertyuiop0987654321', { Status: 'uploaded' })
                     .expect(404)
                     .then(res => res.body);
-            expect(res).to.equal('Asset qwertyuiop0987654321 not found');
+            expect(res).to.be.an('object');
+            expect(res).to.have.property('error', 'Asset qwertyuiop0987654321 not found');
         });
 
         it('Attempt to mark asset upload as completed with invalid request', async function() {
@@ -148,19 +150,22 @@ describe('Asset Uploader Service Upload/Download Tests', function() {
              res = await completeAsset(assetId)
                      .expect(500)
                      .then(res => res.body);
-             expect(res).to.equal('Invalid request');
+            expect(res).to.be.an('object');
+            expect(res).to.have.property('error', 'Invalid request');
 
             res = await completeAsset(assetId, { Status: 'something other than uploaded' })
                     .expect(500)
                     .then(res => res.body);
-            expect(res).to.equal('Invalid request');
+            expect(res).to.be.an('object');
+            expect(res).to.have.property('error', 'Invalid request');
         });
 
         it('Attempt to mark asset upload as completed even though no upload was performed', async function() {
             const res = await completeAsset(assetId, { Status: 'uploaded' })
                     .expect(500)
                     .then(res => res.body);
-            expect(res).to.equal(`Asset ${assetId} has not been uploaded`);
+            expect(res).to.be.an('object');
+            expect(res).to.have.property('error', `Asset ${assetId} has not been uploaded`);
         });
 
         it('Attempt to mark asset upload as completed more than once', async function() {
@@ -177,7 +182,8 @@ describe('Asset Uploader Service Upload/Download Tests', function() {
             res = await completeAsset(assetId, { Status: 'uploaded' })
                     .expect(500)
                     .then(res => res.body);
-            expect(res).to.equal(`Upload of asset ${assetId} is already completed`);
+            expect(res).to.be.an('object');
+            expect(res).to.have.property('error', `Upload of asset ${assetId} is already completed`);
         });
     });
 
@@ -195,14 +201,16 @@ describe('Asset Uploader Service Upload/Download Tests', function() {
             const res = await getAsset('qwertyuiop0987654321')
                     .expect(404)
                     .then(res => res.body);
-            expect(res).to.equal('Asset qwertyuiop0987654321 not found');
+            expect(res).to.be.an('object');
+            expect(res).to.have.property('error', 'Asset qwertyuiop0987654321 not found');
         });
 
         it('Attempt to retrieve pre-signed download URL for asset that does not have a completed upload', async function() {
             const res = await getAsset(assetId)
                     .expect(500)
                     .then(res => res.body);
-            expect(res).to.equal(`Asset ${assetId} has not been uploaded`);
+            expect(res).to.be.an('object');
+            expect(res).to.have.property('error', `Asset ${assetId} has not been uploaded`);
         });
 
         it('Attempt to retrieve pre-signed download URL with invalid timeout', async function() {
@@ -212,19 +220,22 @@ describe('Asset Uploader Service Upload/Download Tests', function() {
                     .query({ timeout: 'not a number'})
                     .expect(500)
                     .then(res => res.body);
-            expect(res).to.equal('Invalid timeout');
+            expect(res).to.be.an('object');
+            expect(res).to.have.property('error', 'Invalid timeout');
 
             res = await getAsset(assetId)
                     .query({ timeout: 0})
                     .expect(500)
                     .then(res => res.body);
-            expect(res).to.equal('Invalid timeout');
+            expect(res).to.be.an('object');
+            expect(res).to.have.property('error', 'Invalid timeout');
 
             res = await getAsset(assetId)
                     .query({ timeout: -1})
                     .expect(500)
                     .then(res => res.body);
-            expect(res).to.equal('Invalid timeout');
+            expect(res).to.be.an('object');
+            expect(res).to.have.property('error', 'Invalid timeout');
         });
     });
 

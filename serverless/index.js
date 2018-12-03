@@ -93,7 +93,7 @@ const error = (err) => {
         sc = 404;
     }
 
-    return apigResponse(message, sc);
+    return apigResponse({ error: message }, sc);
 };
 
 const apigResponse = (obj, sc) => {
