@@ -23,7 +23,8 @@ module.exports.completeAsset = async (event) => {
     }
 
     try {
-        await assets.complete(assetId);
+        const asset = await assets.get(assetId);
+        await assets.complete(asset);
         return success(); // Response for this is not defined in requirements
     }
     catch (err) {

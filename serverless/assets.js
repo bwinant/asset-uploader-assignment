@@ -26,8 +26,24 @@ module.exports.create = async () => {
     return assetId;
 };
 
-module.exports.complete = async (assetId) => {
-    // TODO: should check that the uploaded asset actually exists in S3?
+module.exports.complete = async (asset) => {
+    const assetId = asset.id;
+
+    // Check that the uploaded asset actually exists in S3
+    try {
+        await s3.headObject({ Bucket: BUCKET, Key: assetId }).promise();
+    }
+    catch (err) {
+        // Will get a 403 if object does not exist
+        if (err.code === 'Forbidden') {
+            throw new Error(`Asset ${assetId} has not been uploaded`);
+        }
+    }
+
+    // Check if asset was already completed
+    if (asset.status === 'uploaded') {
+        throw new Error(`Upload of asset ${assetId} is already completed`);
+    }
 
     try {
         // Update asset state in Dynamo

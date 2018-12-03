@@ -128,6 +128,7 @@ describe('Asset Uploader Service Upload/Download Tests', function() {
         before(async function() {
             const res = await createAsset().expect(200).then(res => res.body);
             assetId = res.id;
+            uploadUrl = res.upload_url;
         });
 
         after(async function() {
@@ -153,6 +154,30 @@ describe('Asset Uploader Service Upload/Download Tests', function() {
                     .expect(500)
                     .then(res => res.body);
             expect(res).to.equal('Invalid request');
+        });
+
+        it('Attempt to mark asset upload as completed even though no upload was performed', async function() {
+            const res = await completeAsset(assetId, { Status: 'uploaded' })
+                    .expect(500)
+                    .then(res => res.body);
+            expect(res).to.equal(`Asset ${assetId} has not been uploaded`);
+        });
+
+        it('Attempt to mark asset upload as completed more than once', async function() {
+            let res;
+
+            res = await uploadFile(uploadUrl, testFile)
+                    .expect(200)
+                    .then(res => res.body);
+
+            res = await completeAsset(assetId, { Status: 'uploaded' })
+                    .expect(200)
+                    .then(res => res.body);
+
+            res = await completeAsset(assetId, { Status: 'uploaded' })
+                    .expect(500)
+                    .then(res => res.body);
+            expect(res).to.equal(`Upload of asset ${assetId} is already completed`);
         });
     });
 
