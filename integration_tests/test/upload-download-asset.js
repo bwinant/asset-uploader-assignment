@@ -7,7 +7,7 @@ const request = require('supertest');
 
 const baseUrl = process.env.BASE_URL || 'http://localhost:8080';
 const testFile = fs.readFileSync('./test/file.jpg');
-
+const invalidId = '9784c04d-598c-4e69-87f6-0f2eae377fba';
 
 const createAsset = () => {
     return request(baseUrl).post(`/asset`);
@@ -120,9 +120,10 @@ describe('Asset Uploader Service Upload/Download Tests', function() {
         expect(res).to.be.an('object');
         expect(res).to.have.property('error', `Asset ${assetId} not found`);
 
+        // Depending on AWS credentials used, this could return a 403 or 404 - so let's just check for not 200
         res = await downloadFile(downloadUrl)
-                .expect(403)
-                .then(res => res.body);
+                .then(res => res.status);
+        expect(res).to.not.equal(200);
     });
 
     describe('Upload Completed Error Cases', function() {
@@ -137,11 +138,11 @@ describe('Asset Uploader Service Upload/Download Tests', function() {
         });
 
         it('Attempt to mark non-existent asset upload as completed', async function() {
-            const res = await completeAsset('qwertyuiop0987654321', { Status: 'uploaded' })
+            const res = await completeAsset(invalidId, { Status: 'uploaded' })
                     .expect(404)
                     .then(res => res.body);
             expect(res).to.be.an('object');
-            expect(res).to.have.property('error', 'Asset qwertyuiop0987654321 not found');
+            expect(res).to.have.property('error', `Asset ${invalidId} not found`);
         });
 
         it('Attempt to mark asset upload as completed with invalid request', async function() {
@@ -198,11 +199,11 @@ describe('Asset Uploader Service Upload/Download Tests', function() {
         });
 
         it('Attempt to retrieve pre-signed download URL for non-existent asset', async function() {
-            const res = await getAsset('qwertyuiop0987654321')
+            const res = await getAsset(invalidId)
                     .expect(404)
                     .then(res => res.body);
             expect(res).to.be.an('object');
-            expect(res).to.have.property('error', 'Asset qwertyuiop0987654321 not found');
+            expect(res).to.have.property('error', `Asset ${invalidId} not found`);
         });
 
         it('Attempt to retrieve pre-signed download URL for asset that does not have a completed upload', async function() {
@@ -246,7 +247,7 @@ describe('Asset Uploader Service Upload/Download Tests', function() {
         });
 
         it('Deleting non-existent asset does not fail', async function() {
-            const res = await deleteAsset('qwertyuiop0987654321')
+            const res = await deleteAsset(invalidId)
                     .expect(200)
                     .then(res => res.body);
         });

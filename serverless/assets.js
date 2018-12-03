@@ -34,7 +34,7 @@ module.exports.complete = async (asset) => {
         await s3.headObject({ Bucket: BUCKET, Key: assetId }).promise();
     }
     catch (err) {
-        // Will get a 403 if object does not exist
+        // Will get a 403 if object does not exist - to get 404 need to give ListBucket permission on bucket policy and don't want to do that
         if (err.code === 'Forbidden') {
             throw new Error(`Asset ${assetId} has not been uploaded`);
         }
