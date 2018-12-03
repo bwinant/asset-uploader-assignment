@@ -1,0 +1,25 @@
+version: '3.1'
+
+services:
+  db:
+    image: library/postgres
+    container_name: db
+    ports:
+      - '5432:5432'
+    environment:
+      - POSTGRES_USER=assetuploader
+      - POSTGRES_PASSWORD=E3!BVpNH
+      - POSTGRES_DB=assets
+
+  server:
+    build:
+      context: .
+    container_name: server
+    ports:
+      - '8080:8080'
+    environment:
+      - spring.datasource.url=jdbc:postgresql://db:5432/assets
+      - spring.datasource.username=assetuploader
+      - spring.datasource.password=E3!BVpNH
+    depends_on:
+      - db
