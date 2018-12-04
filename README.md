@@ -7,6 +7,8 @@ This repository contains multiple implementations of the S3 asset uploader servi
 
 **java** directory contains a Java implementation
 
+**go** directory contains a Go implementation
+
 **integration_tests** contains an integration test suite that can be run against all implementations 
 
 Each subdirectory contains a README file with further instructions on how to build and run the respective implementations.
