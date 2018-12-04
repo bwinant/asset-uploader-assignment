@@ -27,7 +27,6 @@ provider:
         - s3:DeleteObject
       Resource:
         - !Sub arn:aws:s3:::${self:custom.assetBucket}/*
-          
   environment:
     ASSET_BUCKET: ${self:custom.assetBucket}
     ASSET_TABLE: ${self:custom.assetTable}

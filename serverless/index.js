@@ -44,7 +44,8 @@ module.exports.getAsset = async (event) => {
     try {
         const asset = await assets.get(assetId);
         if (asset.status !== 'uploaded') {
-            return error(`Asset ${assetId} has not been uploaded`);  // Error message for this response is not defined in requirements
+            //return error(`Asset ${assetId} has not been uploaded`);  // Error message for this response is not defined in requirements
+            return error(`Asset ${assetId} not found`, 404);
         }
 
         const downloadUrl = assets.getDownloadUrl(assetId, timeout);
@@ -72,9 +73,8 @@ const success = (obj) => {
     return apigResponse(obj, 200);
 };
 
-const error = (err) => {
+const error = (err, sc = 500) => {
     let message;
-    let sc = 500;
 
     if (err instanceof Error)  {
         console.log(err.stack);
