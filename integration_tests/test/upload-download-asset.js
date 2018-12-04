@@ -163,10 +163,10 @@ describe('Asset Uploader Service Upload/Download Tests', function() {
 
         it('Attempt to mark asset upload as completed even though no upload was performed', async function() {
             const res = await completeAsset(assetId, { Status: 'uploaded' })
-                    .expect(500)
+                    .expect(404)
                     .then(res => res.body);
             expect(res).to.be.an('object');
-            expect(res).to.have.property('error', `Asset ${assetId} has not been uploaded`);
+            expect(res).to.have.property('error', `Asset ${assetId} not found`);
         });
 
         it('Attempt to mark asset upload as completed more than once', async function() {
@@ -208,10 +208,10 @@ describe('Asset Uploader Service Upload/Download Tests', function() {
 
         it('Attempt to retrieve pre-signed download URL for asset that does not have a completed upload', async function() {
             const res = await getAsset(assetId)
-                    .expect(500)
+                    .expect(404)
                     .then(res => res.body);
             expect(res).to.be.an('object');
-            expect(res).to.have.property('error', `Asset ${assetId} has not been uploaded`);
+            expect(res).to.have.property('error', `Asset ${assetId} not found`);
         });
 
         it('Attempt to retrieve pre-signed download URL with invalid timeout', async function() {
