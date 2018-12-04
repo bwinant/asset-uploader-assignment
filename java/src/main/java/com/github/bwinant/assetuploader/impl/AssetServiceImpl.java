@@ -78,7 +78,8 @@ public class AssetServiceImpl implements AssetService
         boolean exists = s3Client.doesObjectExist(bucketName, assetId.toString());
         if (!exists)
         {
-            throw new AssetException("Asset " + assetId + " has not been uploaded");
+            //throw new AssetException("Asset " + assetId + " has not been uploaded");
+            throw new AssetNotFoundException("Asset " + assetId + " not found");
         }
 
         // Check if asset was already completed

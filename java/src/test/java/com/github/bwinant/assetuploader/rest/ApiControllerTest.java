@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import com.github.bwinant.assetuploader.Asset;
 import com.github.bwinant.assetuploader.AssetException;
+import com.github.bwinant.assetuploader.AssetNotFoundException;
 import com.github.bwinant.assetuploader.AssetService;
 import com.github.bwinant.assetuploader.rest.ApiController.CreateResult;
 import com.github.bwinant.assetuploader.rest.ApiController.GetResult;
@@ -119,7 +120,8 @@ public class ApiControllerTest
         apiController.get(assetId, "5.2");
     }
 
-    @Test(expected = InvalidRequestException.class)
+    //@Test(expected = InvalidRequestException.class)
+    @Test(expected = AssetNotFoundException.class)
     public void get_assetNotUploaded() throws AssetException
     {
         UUID assetId = UUID.randomUUID();

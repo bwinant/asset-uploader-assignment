@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.bwinant.assetuploader.Asset;
 import com.github.bwinant.assetuploader.AssetException;
+import com.github.bwinant.assetuploader.AssetNotFoundException;
 import com.github.bwinant.assetuploader.AssetService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -106,7 +107,8 @@ public class ApiController
         Asset asset = assetService.getAsset(assetId);
         if (asset.getStatus() != uploaded)
         {
-            throw new InvalidRequestException("Asset " + assetId + " has not been uploaded");
+            //throw new InvalidRequestException("Asset " + assetId + " has not been uploaded");
+            throw new AssetNotFoundException("Asset " + assetId + " not found");
         }
 
         String downloadUrl = assetService.getDownloadUrl(assetId, timeout);
